@@ -1,23 +1,32 @@
-import React, { ReactComponentElement, useRef } from "react";
-import { View, StyleSheet } from "react-native";
-import { Card, Input } from '../utils/styles'
+import React, { ReactComponentElement, useRef, useState } from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { Card, Input } from "../utils/styles";
+import CustomInput from "../UI/CustomInput";
 
 export default function LoginForm() {
-
-
-  const inputRef = useRef(null);
+  const [emailInput, setEmailInput] = useState('')
+  const [passwordInput, setPasswordInput] = useState("");
 
   return (
     <View>
       <Card>
-        <Input
-          keyboardType="email-address"
+        <CustomInput
+          id="email"
+          key="email"
+          textContentType="emailAddress"
           placeholder="Email"
-          placeholderTextColor="blue"
-          style={styles.onFocusInput}
-        >
-          Email
-        </Input>
+          keyboardType="email-address"
+          value={emailInput}
+          onChangeText={setEmailInput}
+        />
+        <CustomInput
+          id="password"
+          key="password"
+          placeholder="Password"
+          value={passwordInput}
+          onChangeText={setPasswordInput}
+          secureTextEntry={true}
+        />
       </Card>
     </View>
   );
@@ -25,7 +34,8 @@ export default function LoginForm() {
 
 const styles = StyleSheet.create({
   onFocusInput: {
-    borderColor: '#b5c401',
+    borderColor: "#b5c401",
     borderBottomWidth: 2,
   },
+  notFocusInput: {},
 });
