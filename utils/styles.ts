@@ -21,16 +21,10 @@ export const Card = styled.View`
   })};
 `;
 
-export const Input = styled.TextInput`
-  border: 0;
-  border-bottom-width: 1px;
-  border-color: #ddd;
-  height: 70px;
-  padding-left: 10px;
-  color: #9d9d9d;
-`;
-
-export const InputFocus = styled(Input)`
-  border-color: #b5c401;
-  border-bottom-width: 2px;
+export const FormTitle = styled.Text`
+  color: #707070;
+  font-size: 35px;
+  font-weight: bold;
+  font-style: italic;
+  margin-bottom: 25px;
 `;

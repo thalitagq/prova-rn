@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { KeyboardTypeOptions, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, Text, View } from "react-native";
+import { KeyboardTypeOptions, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 
 export const Input = styled.TextInput`
@@ -23,9 +23,7 @@ type InputProps = {
 
 const CustomInput: React.FC<InputProps> = (props) => {
   const [onFocus, setOnFocus] = useState(false);
-  const [value, setValue] = useState('')
   const customStyles = onFocus ? styles.onFocusInput : styles.notOnFocus;
-  console.log(props);
   return (
     <Input
       placeholder={props.placeholder}
@@ -35,6 +33,7 @@ const CustomInput: React.FC<InputProps> = (props) => {
       onFocus={() => setOnFocus(true)}
       onBlur={() => setOnFocus(false)}
       secureTextEntry={props.secureTextEntry}
+      selectionColor="#b5c401"
     />
   );
 };
