@@ -4,17 +4,22 @@ import { Card, FormTitle } from "../utils/styles";
 import CustomInput from "../UI/CustomInput";
 import CustomConfirmButtom from "../UI/CustomConfirmButtom";
 import CustomSecondaryButton from "../UI/CustomSecondaryButton";
+import { StackScreenProps } from "@react-navigation/stack";
+import { InitialStackParamList } from "../App";
+import InitialPage from "../screens/InitialPage";
 
-export default function LoginForm() {
-  const [emailInput, setEmailInput] = useState('')
-  const [passwordInput, setPasswordInput] = useState("")
+export type Props = StackScreenProps<InitialStackParamList, "Login">;
+
+export default function LoginForm({ navigation }: Props) {
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
 
   const signUpHandler = () => {
-    console.log('ok');
-  }
+    console.log("ok");
+  };
 
   return (
-    <View style={styles.container}>
+    <InitialPage>
       <FormTitle>Authentication</FormTitle>
       <Card>
         <CustomInput
@@ -37,9 +42,9 @@ export default function LoginForm() {
         <TouchableHighlight
           activeOpacity={0.6}
           underlayColor="#f5f5f5"
-          onPress={() => console.log("click")}
+          onPress={() => navigation.push("Reset")}
           style={{
-            marginVertical: 20,
+            marginTop: 20,
             maxWidth: 180,
             marginLeft: "auto",
             marginRight: 10,
@@ -47,29 +52,25 @@ export default function LoginForm() {
         >
           <Text style={styles.link}>I forgot my password</Text>
         </TouchableHighlight>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          <CustomConfirmButtom
-            title="Log In"
-            onPress={() => {}}
-          />
-        </View>
+        <CustomConfirmButtom title="Log In" onPress={() => {}} />
       </Card>
-      <View style={{ flexDirection: "row", justifyContent: "center",marginVertical: 20 }}>
-        <CustomSecondaryButton title="Sign Up" onPress={signUpHandler}/>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 10
+        }}
+      >
+        <CustomSecondaryButton
+          title="Sign Up"
+          onPress={() => navigation.push("Signup")}
+        />
       </View>
-    </View>
+    </InitialPage>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 2
-  },
-  onFocusInput: {
-    borderColor: "#b5c401",
-    borderBottomWidth: 2,
-  },
-  notFocusInput: {},
   link:{
     color: "#C1C1C1"
   }

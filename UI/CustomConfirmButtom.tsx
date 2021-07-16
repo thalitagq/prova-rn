@@ -30,6 +30,8 @@ export default CustomConfirmButtom
 const styles = StyleSheet.create({
   button:{
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: "center",
+    marginVertical: 20,
   }
 })

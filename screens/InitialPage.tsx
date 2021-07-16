@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import Footer from "../UI/Footer";
-import LoginForm from "./LoginForm";
+import {width} from "../utils/styles"
 
 const Title = styled.Text`
   font-weight: bold;
@@ -21,27 +21,36 @@ const BorderBottomTitle = styled.View`
   margin-bottom: 30px;
 `;
 
-const InitialPage = () => {
+const InitialPage: React.FC = ({children}) => {
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
         <Title>TGL</Title>
         <BorderBottomTitle />
-        <LoginForm />
-        <Footer />
-      </View>
-    </ScrollView>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {children}
+      </ScrollView>
+      <Footer />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "100%",
+    // height: "100%",
+    width: width,
+
     backgroundColor: "#F7F7F7",
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 20,
+    // justifyContent: "center",
+    paddingTop: 20,
+  },
+  scroll: {
+    // flex: 1,
+
+    width: width,
+    alignItems: "center",
+    // justifyContent: "center",
   },
 });
 

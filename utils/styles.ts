@@ -1,11 +1,11 @@
 import styled, { css } from "styled-components/native";
 import { Platform, Dimensions } from "react-native";
 
-const width = Dimensions.get("window").width;
+export const width = Dimensions.get("window").width;
 
 export const Card = styled.View`
   background-color: #fff;
-  min-height: 290px;
+  min-height: 100px;
   width: ${width * 0.8 + "px"};
   box-shadow: 0px 3px 25px #000;
   border-radius: 15px;

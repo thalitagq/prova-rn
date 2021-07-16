@@ -32,13 +32,15 @@ const CustomSecondaryButton: React.FC<CustomSecondaryButtonProps> = (props) => {
           style={{ marginBottom: -10 }}
         />
       )}
-      <SecondaryButton>{props.title}</SecondaryButton>
+      <SecondaryButton >{props.title}</SecondaryButton>
+      {!props.leftArrow && (
       <AntDesign
         name="arrowright"
         size={30}
         color="#707070"
         style={{ marginBottom: -10 }}
       />
+      )}
     </TouchableOpacity>
   );
 };
@@ -47,6 +49,8 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10
   },
 });
 
