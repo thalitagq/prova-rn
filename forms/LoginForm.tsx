@@ -7,15 +7,36 @@ import CustomSecondaryButton from "../UI/CustomSecondaryButton";
 import { StackScreenProps } from "@react-navigation/stack";
 import { InitialStackParamList } from "../App";
 import InitialPage from "../screens/InitialPage";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../store/api";
+import { RootState } from "../store";
 
 export type Props = StackScreenProps<InitialStackParamList, "Login">;
 
 export default function LoginForm({ navigation }: Props) {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const dispatch = useDispatch()
+  const { error } = useSelector((state: RootState) => state.auth);
 
-  const signUpHandler = () => {
-    console.log("ok");
+const loginHandler = async () => {
+  const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
+    if (regex.test(emailInput) && passwordInput.length > 3) {
+      await dispatch(
+        loginUser({
+          email: emailInput,
+          password: passwordInput,
+        })
+      );
+
+      if (error) {
+        return alert(error);
+      }
+
+      // navigation.push("");
+    } else {
+      alert("Email ou senha inválidos");
+    }
   };
 
   return (
@@ -52,13 +73,13 @@ export default function LoginForm({ navigation }: Props) {
         >
           <Text style={styles.link}>I forgot my password</Text>
         </TouchableHighlight>
-        <CustomConfirmButtom title="Log In" onPress={() => {}} />
+        <CustomConfirmButtom title="Log In" onPress={loginHandler} />
       </Card>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          marginTop: 10
+          marginTop: 10,
         }}
       >
         <CustomSecondaryButton

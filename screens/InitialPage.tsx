@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import Footer from "../UI/Footer";
-import {width} from "../utils/styles"
+import { width } from "../utils/styles";
 
 const Title = styled.Text`
   font-weight: bold;
@@ -21,14 +21,12 @@ const BorderBottomTitle = styled.View`
   margin-bottom: 30px;
 `;
 
-const InitialPage: React.FC = ({children}) => {
+const InitialPage: React.FC = ({ children }) => {
   return (
     <View style={styles.container}>
-        <Title>TGL</Title>
-        <BorderBottomTitle />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {children}
-      </ScrollView>
+      <Title>TGL</Title>
+      <BorderBottomTitle />
+      <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView>
       <Footer />
     </View>
   );

@@ -11,6 +11,8 @@ import { Text, StyleSheet, View } from "react-native";
 import Footer from "./UI/Footer";
 import { ScrollView } from "react-native-gesture-handler";
 import styled from "styled-components/native";
+import { Provider } from "react-redux";
+import store from './store/index'
 
 export type InitialStackParamList = {
   Login: undefined;
@@ -77,13 +79,13 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <Provider store={store}>
       {isLoaded && (
         <NavigationContainer>
           <RootStackScreen />
         </NavigationContainer>
       )}
-    </>
+    </Provider>
   );
 }
 
