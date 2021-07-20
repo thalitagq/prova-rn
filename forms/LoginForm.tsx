@@ -8,8 +8,9 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { InitialStackParamList } from "../App";
 import InitialPage from "../screens/InitialPage";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../store/api";
+import { getGames, loginUser } from "../store/api";
 import { RootState } from "../store";
+import axios from "axios";
 
 export type Props = StackScreenProps<InitialStackParamList, "Login">;
 

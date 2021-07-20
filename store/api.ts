@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
-import { RootState } from ".";
+import axios from "axios";
+import { RootState } from "./index";
 import { Game } from "./games";
 import { Error } from "./auth";
 import { Item } from "./cart";
-const axios = require("axios").default;
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type LoginReturnType = {
   email: string;
   token: { token: string };
@@ -22,10 +22,10 @@ export type BetsReturnType = {
 
 export const loginUser = createAsyncThunk<
   // Return type of the payload creator
-  // LoginReturnType,
-  null,
+  LoginReturnType,
+  // null,
   // First argument to the payload creator
-  { email: string; password: string },
+  { email: string, password: string },
   // Types for ThunkAPI
   {
     extra: {
@@ -34,61 +34,34 @@ export const loginUser = createAsyncThunk<
     rejectValue: Error;
   }
 >("auth/loginUser", async ({ email, password }, thunkApi) => {
-  
-  return fetch("http://172.17.0.1:3333/sessions", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-    }),
-  })
-    .then(response => {
-      console.log('AQUI', response);
-      
-      const data = response.json();
-      console.log('RESPONSE DATA', data);
-      // return {
-      //   email: email,r
-      //   token: data.data.token,
-      //   user_id: data.data.user_id,
-      // };
-      return null;
-    })
-    .catch(err => {
-      console.log('ERRORrr', err);
-      return thunkApi.rejectWithValue({ message: err } as Error);
+
+  try {
+    const response = await axios({
+      method: "post",
+      url: "http://192.168.18.9:3333/sessions",
+      data: {
+        email: email,
+        password: password,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
     });
-  // try {
-  //   const response = await axios({
-  //     method: "post",
-  //     baseURL: "http://172.17.0.1:3333/sessions",
-  //     data: {
-  //       email: email,
-  //       password: password,
-  //     },
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
     
-  //   console.log('RESPONSE',response);
+    console.log('RESPONSE',response);
     
-  //   return {
-  //     email: email,
-  //     token: response.data.token,
-  //     user_id: response.data.user_id,
-  //   };
+    return {
+      email: email,
+      token: response.data.token,
+      user_id: response.data.user_id,
+    };
 
-  // } catch (error) {
-  //       console.log("ERROR", error);
+  } catch (error) {
+        console.log("ERROR", error);
 
-  //   return thunkApi.rejectWithValue({ message: error } as Error);
-  // }
+    return thunkApi.rejectWithValue({ message: error } as Error);
+  }
 });
 
 export const signupUser = createAsyncThunk<
@@ -114,7 +87,7 @@ export const signupUser = createAsyncThunk<
     try {
       await axios({
         method: "post",
-        url: "http://127.0.0.1:3333/users",
+        url: "http://192.168.18.9:3333/users",
         data: {
           username,
           email,
@@ -148,10 +121,10 @@ export const forgotPassword = createAsyncThunk<
   try {
     const response = await axios({
       method: "post",
-      url: "http://127.0.0.1:3333/passwords",
+      url: "http://192.168.18.9:3333/passwords",
       data: {
         email,
-        redirect_url: "http://127.0.0.1:3000/new_password",
+        redirect_url: "http://192.168.18.9:3000/new_password",
       },
       headers: {
         "Content-Type": "application/json",
@@ -181,7 +154,7 @@ export const newPassword = createAsyncThunk<
   try {
     await axios({
       method: "put",
-      url: "http://127.0.0.1:3333/passwords",
+      url: "http://192.168.18.9:3333/passwords",
       data: {
         password,
         password_confirmation,
@@ -189,6 +162,7 @@ export const newPassword = createAsyncThunk<
       },
       headers: {
         "Content-Type": "application/json",
+        
       },
     });
     return;
@@ -209,17 +183,25 @@ export const getGames = createAsyncThunk<
   }
 >("games/getGames", async (_, thunkApi) => {
   const { token } = thunkApi.getState().auth;
+  console.log('token', token);
+  
+  console.log('GETTING GAMES');
+  
   try {
     const response = await axios({
       method: "get",
-      url: "http://127.0.0.1:3333/games",
+      url: "http://192.168.18.9:3333/games",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
+    console.log('GAMES', response);
+    
     return response;
   } catch (error) {
+    console.log('GAMES ERROR', error);
+    
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
 });
@@ -250,7 +232,7 @@ export const saveBet = createAsyncThunk<
   try {
     const response = await axios({
       method: "post",
-      url: "http://127.0.0.1:3333/bets",
+      url: "http://192.168.18.9:3333/bets",
       data: {
         bets: [...betsTransformed],
       },
@@ -281,13 +263,36 @@ export const getBets = createAsyncThunk<
   try {
     const response = await axios({
       method: "get",
-      url: `http://127.0.0.1:3333/bets/${user_id}`,
+      url: `http://192.168.18.9:3333/bets/${user_id}`,
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log(response);
 
     const transformBets = transformToTypeItem(response.data.data, games)
     return transformBets as Item[];
+  } catch (error) {
+    return thunkApi.rejectWithValue({ message: error } as Error);
+  }
+});
+
+export const logoutUser = createAsyncThunk<
+  null,
+  void,
+  {
+    extra: {
+      jwt: string;
+    };
+    state: RootState;
+    rejectValue: Error;
+  }
+>("auth/logoutUser", async (_, thunkApi) => {
+  try {
+      await removeValue("email");
+      await removeValue("password");
+      await removeValue("token");
+      await removeValue("user_id");
+      console.log('DEPOIS DO REMOVE',await getData("user_id"))
+    return null;
   } catch (error) {
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
@@ -341,3 +346,49 @@ function returnGameInfo(games: Game[], type?: string, id?: number): Game {
 
   return game[0];
 }
+
+export const storeData = async (key: string, value: string) => {
+  try {
+    await AsyncStorage.setItem(key, value);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const storeDataObj = async (key: string, value: any) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(key, jsonValue);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getData = async (key: string) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      return value;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getDataObj = async (key: string) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key);
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const removeValue = async (key: string) => {
+  try {
+    await AsyncStorage.removeItem(key);
+    console.log('item removed?', await getData('user_id'));
+  } catch (e) {
+    console.log(e);
+  }
+};

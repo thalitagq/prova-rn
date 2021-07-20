@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getBets, saveBet } from "./api";
 
 export type Item = {
-  id: number
+  id: number;
   type: string;
   numbers: string[];
   date: string;

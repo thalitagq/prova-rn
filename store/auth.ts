@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPassword, loginUser, newPassword, signupUser } from "./api";
+import { forgotPassword, loginUser, logoutUser, newPassword, signupUser } from "./api";
 
 type User = {
   username?: string | null;
@@ -9,7 +9,7 @@ type User = {
 };
 
 type InitialStateType = {
-  user_id: Promise<number | null> | number | null;
+  user_id: number | null;
   user: User | null;
   status: "idle" | "loading" | "pending";
   error: string | null;
@@ -21,7 +21,7 @@ export type Error = {
   message: { response: { data: [{ message: string }] } }
 };
 
-const storeData = async (key: string, value: string) => {
+export const storeData = async (key: string, value: string) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (e) {
@@ -29,18 +29,36 @@ const storeData = async (key: string, value: string) => {
   }
 };
 
-const getData = async (key: string) => {
+export const storeDataObj = async (key: string, value:any) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(key, jsonValue);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getData = async (key: string) => {
   try {
     const value = await AsyncStorage.getItem(key);
     if (value !== null) {
-      return value 
+      return value as string
     }
   } catch (e) {
     console.log(e);
   }
 }
 
-const removeValue = async (key: string) => {
+export const getDataObj = async (key: string) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key);
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.log(e);  
+  }
+};
+
+export const removeValue = async (key: string) => {
   try {
     await AsyncStorage.removeItem(key);
   } catch (e) {
@@ -75,12 +93,8 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = { email: "", password: "" };
-      removeValue("email");
-      removeValue("password");
-      removeValue("token");
-      removeValue("user_id");
     },
-    resetState: (state) => initialState()
+    resetState: (state) => initialState()    
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state) => {
@@ -93,13 +107,13 @@ const authSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       console.log("LOGIN FULFILED!!!", payload);
 
-      // state.user!.email = payload.email;
-      // state.token = payload.token.token;
-      // state.user_id = payload["user_id"].id;
-      // storeData("token", payload.token.token);
-      // storeData("email", payload.email);
-      // storeData("user_id", payload["user_id"].id.toString());
-      // state.status = "idle";
+      state.user!.email = payload.email;
+      state.token = payload.token.token;
+      state.user_id = payload["user_id"].id;
+      storeData("token", payload.token.token);
+      storeData("email", payload.email);
+      storeData("user_id", payload["user_id"].id.toString());
+      state.status = "idle";
     });
 
     builder.addCase(loginUser.rejected, (state, { payload }) => {
@@ -147,6 +161,26 @@ const authSlice = createSlice({
     });
 
     builder.addCase(newPassword.rejected, (state, { payload }) => {
+      state.error =
+        payload?.message.response.data[0].message ||
+        "Algo deu errado. Tente novamente";
+      state.status = "idle";
+    });
+
+    builder.addCase(logoutUser.pending, (state) => {
+      console.log('PENDING LOGOUT');
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(logoutUser.fulfilled, (state) => {
+      console.log('LOGOUT FULFIED');      
+      state.status = "idle";
+    });
+
+    builder.addCase(logoutUser.rejected, (state, { payload }) => {
+      console.log("LOGOUT ERROR");
+
       state.error =
         payload?.message.response.data[0].message ||
         "Algo deu errado. Tente novamente";

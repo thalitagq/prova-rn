@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import * as Font from "expo-font";;
 import { createStackNavigator } from "@react-navigation/stack";
-import InitialPage from "./screens/InitialPage";
 import Home from "./screens/Home";
 import { NavigationContainer } from "@react-navigation/native";
 import LoginForm from "./forms/LoginForm";
 import SignUpForm from "./forms/SignUpForm";
 import ResetPasswordForm from "./forms/ResetPassword";
-import { Text, StyleSheet, View } from "react-native";
-import Footer from "./UI/Footer";
-import { ScrollView } from "react-native-gesture-handler";
+import { StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { Provider } from "react-redux";
 import store from './store/index'
+import { useSelector } from 'react-redux'
+import { RootState } from "./store/index";
 
 export type InitialStackParamList = {
   Login: undefined;
@@ -46,9 +45,11 @@ const BorderBottomTitle = styled.View`
 `;
 
 const RootStack = createStackNavigator();
-const RootStackScreen = () => (
-  <RootStack.Navigator headerMode="none" >
-    {true ? (
+const RootStackScreen = (props: {user_id:  number | Promise<number | null> | null}) => {
+  console.log('user_id login', props.user_id);
+  
+  return (<RootStack.Navigator headerMode="none">
+    {!props.user_id ? (
       <RootStack.Screen
         name="InitialPage"
         component={InitialStackScreen}
@@ -61,11 +62,12 @@ const RootStackScreen = () => (
         options={{ animationEnabled: false }}
       />
     )}
-  </RootStack.Navigator>
-);
+  </RootStack.Navigator>)
+};
 
-export default function App() {
+function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const { user_id } = useSelector((state: RootState) => state.auth)
   async function loadFonts() {
     await Font.loadAsync({
       Helvetica: require("./assets/fonts/Helvetica.ttf"),
@@ -79,15 +81,25 @@ export default function App() {
   }, []);
 
   return (
-    <Provider store={store}>
+    <>
       {isLoaded && (
         <NavigationContainer>
-          <RootStackScreen />
+          <RootStackScreen user_id={user_id}/>
         </NavigationContainer>
       )}
+    </>
+  )
+}
+
+const AppWrapper = () => {
+  return (
+    <Provider store={store}>
+      <App />
     </Provider>
   );
-}
+};
+
+export default AppWrapper;
 
 const styles = StyleSheet.create({
   container: {
