@@ -9,9 +9,10 @@ import ResetPasswordForm from "./forms/ResetPassword";
 import { StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { Provider } from "react-redux";
-import store from './store/index'
+import store, { persistor } from './store/index'
 import { useSelector } from 'react-redux'
 import { RootState } from "./store/index";
+import { PersistGate } from "redux-persist/integration/react";
 
 export type InitialStackParamList = {
   Login: undefined;
@@ -45,9 +46,7 @@ const BorderBottomTitle = styled.View`
 `;
 
 const RootStack = createStackNavigator();
-const RootStackScreen = (props: {user_id:  number | Promise<number | null> | null}) => {
-  console.log('user_id login', props.user_id);
-  
+const RootStackScreen = (props: {user_id:  number | Promise<number | null> | null}) => {  
   return (<RootStack.Navigator headerMode="none">
     {!props.user_id ? (
       <RootStack.Screen
@@ -94,7 +93,9 @@ function App() {
 const AppWrapper = () => {
   return (
     <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
       <App />
+      </PersistGate>
     </Provider>
   );
 };

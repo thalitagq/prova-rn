@@ -48,9 +48,7 @@ export const loginUser = createAsyncThunk<
         Accept: "application/json",
       },
     });
-    
-    console.log('RESPONSE',response);
-    
+        
     return {
       email: email,
       token: response.data.token,
@@ -182,9 +180,7 @@ export const getGames = createAsyncThunk<
     rejectValue: Error;
   }
 >("games/getGames", async (_, thunkApi) => {
-  const { token } = thunkApi.getState().auth;
-  console.log('token', token);
-  
+  const { token } = thunkApi.getState().auth;  
   console.log('GETTING GAMES');
   
   try {
@@ -196,7 +192,7 @@ export const getGames = createAsyncThunk<
         "Content-Type": "application/json",
       },
     });
-    console.log('GAMES', response);
+    console.log('GAMES', response.data);
     
     return response;
   } catch (error) {
@@ -291,7 +287,6 @@ export const logoutUser = createAsyncThunk<
       await removeValue("password");
       await removeValue("token");
       await removeValue("user_id");
-      console.log('DEPOIS DO REMOVE',await getData("user_id"))
     return null;
   } catch (error) {
     return thunkApi.rejectWithValue({ message: error } as Error);

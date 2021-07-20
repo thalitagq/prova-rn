@@ -97,16 +97,12 @@ const authSlice = createSlice({
     resetState: (state) => initialState()    
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUser.pending, (state) => {
-      console.log('PENDING LOGIN');
-      
+    builder.addCase(loginUser.pending, (state) => {      
       state.status = "loading";
       state.error = null;
     });
 
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
-      console.log("LOGIN FULFILED!!!", payload);
-
       state.user!.email = payload.email;
       state.token = payload.token.token;
       state.user_id = payload["user_id"].id;
@@ -116,9 +112,7 @@ const authSlice = createSlice({
       state.status = "idle";
     });
 
-    builder.addCase(loginUser.rejected, (state, { payload }) => {
-      console.log('REJECTED', payload);
-      
+    builder.addCase(loginUser.rejected, (state, { payload }) => {      
       state.error =
         payload?.message?.response.data[0].message ||
         "Não foi possível fazer o login";
@@ -168,19 +162,11 @@ const authSlice = createSlice({
     });
 
     builder.addCase(logoutUser.pending, (state) => {
-      console.log('PENDING LOGOUT');
       state.status = "loading";
       state.error = null;
     });
 
-    builder.addCase(logoutUser.fulfilled, (state) => {
-      console.log('LOGOUT FULFIED');      
-      state.status = "idle";
-    });
-
     builder.addCase(logoutUser.rejected, (state, { payload }) => {
-      console.log("LOGOUT ERROR");
-
       state.error =
         payload?.message.response.data[0].message ||
         "Algo deu errado. Tente novamente";
