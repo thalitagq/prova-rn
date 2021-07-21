@@ -1,32 +1,54 @@
-import { BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import { RootState } from "../store";
 import { getBets, getGames, logoutUser } from "../store/api";
-import { authActions, getData } from "../store/auth";
 import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import Bet from "./Bet";
 import Account from "./Account";
+import Layout from "../UI/Layout";
+import GameTag, { GameProps } from "../components/Game";
+import { ScrollView } from "react-native-gesture-handler";
 
 const BetTabButtonWrapper = styled.TouchableOpacity`
   width: 80px;
   height: 80px;
   border-radius: 50px;
   background-color: #b5c300;
-  /* position: absolute; */
+  /* margin-bottom:40px; */
+  bottom: 40px;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid #fff;
+  /* ${Platform.select({
+    ios: css`shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8`,
+    android: css`
+      elevation: 3;
+    `,
+  })}; */
 `;
 
-const BetTabButton = styled.View`
-  width: 80px;
-  height: 80px;
-  border-radius: 50px;
-  background-color: #b5c300;
-  border: 2px solid #fff;  
-  /* position: absolute; */
-  bottom: 10;
-`;
+const Title = styled.Text`
+  color: #707070;
+  font-size: 22px;
+  font-family: Helvetica;
+  font-style: italic;
+  font-weight: bold;
+`
+
 export type TapParamList = {
   Home: undefined;
   Bet: undefined;
@@ -61,8 +83,8 @@ const DrawerScreen = ({ navigation }: TabProps) => (
       options={{
         tabBarLabel: "",
         tabBarButton: (props) => (
-          <BetTabButtonWrapper onPress={() => navigation.navigate('Bet')}>
-            <Text>oie</Text>
+          <BetTabButtonWrapper onPress={() => navigation.navigate("Bet")}>
+            <AntDesign name="pluscircleo" size={40} color="#fff" />
           </BetTabButtonWrapper>
         ),
       }}
@@ -77,46 +99,59 @@ const Home = () => {
   );
   const { user_id } = useSelector((state: RootState) => state.auth);
 
-  // const { gamesSaved, isBetsStoredEmpty } = useSelector(
-  //   (state: RootState) => state.cart
-  // );
-  // const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
+  const { gamesSaved, isBetsStoredEmpty } = useSelector(
+    (state: RootState) => state.cart
+  );
+  const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
   const dispatch = useDispatch();
-
   useEffect(() => {
     const getGamesHandler = async () => {
       await dispatch(getGames());
     };
 
-    // const getBetsHandler = async () => {
-    //   await dispatch(getBets());
-    // };
+    const getBetsHandler = async () => {
+      await dispatch(getBets());
+    };
 
     if (games.length === 0) {
       getGamesHandler();
     }
-    // if (gamesSaved.length === 0 && isBetsStoredEmpty) {
-    //   getBetsHandler();
-    // }
-    // }, [dispatch, games.length, gamesSaved.length, isBetsStoredEmpty]);
-  }, [dispatch]);
+    
+    if (gamesSaved.length === 0 && isBetsStoredEmpty) {
+      console.log('getting bets again');
+      getBetsHandler();
+    }
+  }, [dispatch, games.length, gamesSaved.length, isBetsStoredEmpty]);
 
-  // useEffect(() => {
-  //   setFilteredGames(
-  //     gamesSaved.filter((game) => game.type === selectedGame!.type)
-  //   );
-  // }, [selectedGame, gamesSaved]);
-  const logoutHandler = async () => {
-    await dispatch(logoutUser());
-    dispatch(authActions.resetState());
-  };
+  useEffect(() => {
+    setFilteredGames(
+      gamesSaved.filter((game) => game.type === selectedGame!.type)
+    );
+  }, [selectedGame, gamesSaved]);
+  console.log(filteredGames);
+  
   return (
-    <View style={styles.container}>
-      <Button onPress={logoutHandler} title="logout">
-        Games
-      </Button>
-      <Text>{user_id}</Text>
-    </View>
+    <Layout>
+      <Title>RECENT GAMES</Title>
+      {filteredGames.length === 0 && (
+        <Text>Não há apostas feitas em {selectedGame?.type}</Text>
+      )}
+      <ScrollView>
+      {filteredGames.map((game) => (
+        <View style={{ marginBottom: 10 }}>
+          <GameTag
+            key={game.id}
+            date={game.date}
+            price={game.price}
+            color={game.color}
+            id={game.id}
+            numbers={game.numbers}
+            type={game.type}
+          />
+        </View>
+      ))}
+      </ScrollView>
+    </Layout>
     // <Container>
     //   <div>
     //     <Title>Recent Games</Title>

@@ -262,11 +262,13 @@ export const getBets = createAsyncThunk<
       url: `http://192.168.18.9:3333/bets/${user_id}`,
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(response);
+    console.log("BETS response ok", response.data);
 
-    const transformBets = transformToTypeItem(response.data.data, games)
+    const transformBets = transformToTypeItem(response.data, games)
     return transformBets as Item[];
   } catch (error) {
+    console.log('ERROR BETS', error);
+    
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
 });

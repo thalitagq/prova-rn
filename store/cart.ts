@@ -24,7 +24,7 @@ const initialState = () =>
     totalPrice: 0,
     gamesSaved: [],
     error: null,
-    isBetsStoredEmpty: false,
+    isBetsStoredEmpty: true,
   } as InitialStateType);
 
 const cartSlice = createSlice({
@@ -58,10 +58,12 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getBets.fulfilled, (state, { payload }) => {
-      if (payload.length === 0) {
-        state.isBetsStoredEmpty = true;
+      console.log('BETS FULFILED', payload);
+      console.log("isBetsStoredEmpty", state.isBetsStoredEmpty);
+      if (payload.length !== 0) {
+        state.isBetsStoredEmpty = false;
+        state.gamesSaved = payload;
       }
-      state.gamesSaved = payload;
     });
 
     builder.addCase(saveBet.fulfilled, (state, { payload }) => {
