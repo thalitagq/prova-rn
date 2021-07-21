@@ -1,12 +1,13 @@
 import React from "react";
-import styled from "styled-components";
+import styled from "styled-components/native";
 import BetNumber from "./BetNumber";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: flex-start;
+const Container = styled.View`
+  flex: 1;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
   flex-wrap: wrap;
-  gap: 10px;
   margin-bottom: 45px;
 `;
 
@@ -16,7 +17,7 @@ const BetNumbers: React.FC<{ range: number, color: string }> = (props) => {
   const onClickNumberHandler = () => {};
 
   for (let index = 1; index <= props.range; index++) {
-    numbers.push(<BetNumber number={index.toString()} onClick={onClickNumberHandler} key={index} color={props.color}/>);
+    numbers.push(<BetNumber number={index.toString()} onPress={onClickNumberHandler} key={index} color={props.color}/>);
   }
 
   return <Container>{numbers}</Container>;

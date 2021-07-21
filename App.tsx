@@ -13,6 +13,7 @@ import store, { persistor } from './store/index'
 import { useSelector } from 'react-redux'
 import { RootState } from "./store/index";
 import { PersistGate } from "redux-persist/integration/react";
+import InnerTabs from "./components/InnerTabs";
 
 export type InitialStackParamList = {
   Login: undefined;
@@ -57,7 +58,7 @@ const RootStackScreen = (props: {user_id:  number | Promise<number | null> | nul
     ) : (
       <RootStack.Screen
         name="Home"
-        component={Home}
+        component={InnerTabs}
         options={{ animationEnabled: false }}
       />
     )}

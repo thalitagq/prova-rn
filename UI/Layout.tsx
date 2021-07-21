@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from "react-native";
 import Navbar from './Navbar'
+import InnerTabs from '../components/InnerTabs';
 
 const Layout: React.FC = ({children}) => {
   return (

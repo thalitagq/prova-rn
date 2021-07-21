@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPassword, loginUser, logoutUser, newPassword, signupUser } from "./api";
+import { forgotPassword, getData, loginUser, logoutUser, newPassword, signupUser, storeData } from "./api";
 
 type User = {
   username?: string | null;
@@ -19,51 +19,6 @@ type InitialStateType = {
 
 export type Error = {
   message: { response: { data: [{ message: string }] } }
-};
-
-export const storeData = async (key: string, value: string) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const storeDataObj = async (key: string, value:any) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(key, jsonValue);
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const getData = async (key: string) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      return value as string
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-export const getDataObj = async (key: string) => {
-  try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    console.log(e);  
-  }
-};
-
-export const removeValue = async (key: string) => {
-  try {
-    await AsyncStorage.removeItem(key);
-  } catch (e) {
-    console.log(e);
-  }
 };
 
 const initialState = () =>

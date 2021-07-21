@@ -56,8 +56,6 @@ export const loginUser = createAsyncThunk<
     };
 
   } catch (error) {
-        console.log("ERROR", error);
-
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
 });
@@ -181,7 +179,6 @@ export const getGames = createAsyncThunk<
   }
 >("games/getGames", async (_, thunkApi) => {
   const { token } = thunkApi.getState().auth;  
-  console.log('GETTING GAMES');
   
   try {
     const response = await axios({
@@ -191,13 +188,9 @@ export const getGames = createAsyncThunk<
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-    });
-    console.log('GAMES', response.data);
-    
+    });    
     return response;
-  } catch (error) {
-    console.log('GAMES ERROR', error);
-    
+  } catch (error) {    
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
 });
@@ -223,7 +216,6 @@ export const saveBet = createAsyncThunk<
   }
 
   const betsTransformed = tranformToBetType(cart, games, user_id as number);
-  console.log(tranformToBetType(cart, games, Number(user_id)));
   
   try {
     const response = await axios({
@@ -234,7 +226,6 @@ export const saveBet = createAsyncThunk<
       },
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(response);
     
     return null;
   } catch (error) {
@@ -262,13 +253,10 @@ export const getBets = createAsyncThunk<
       url: `http://192.168.18.9:3333/bets/${user_id}`,
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("BETS response ok", response.data);
 
     const transformBets = transformToTypeItem(response.data, games)
     return transformBets as Item[];
-  } catch (error) {
-    console.log('ERROR BETS', error);
-    
+  } catch (error) {    
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
 });
@@ -298,12 +286,7 @@ export const logoutUser = createAsyncThunk<
 function tranformToBetType(items: Item[], games: Game[], user_id: number){
   return items.map((item) => {
     const info = returnGameInfo(games, item.type);
-    console.log(     { user_id,
-      game_id: info.id,
-      total_price: item.price,
-      date: new Date(item.date).toISOString(),
-      numbers: item.numbers,});
-    
+
     return {
       user_id,
       game_id: info.id,
@@ -384,7 +367,6 @@ export const getDataObj = async (key: string) => {
 export const removeValue = async (key: string) => {
   try {
     await AsyncStorage.removeItem(key);
-    console.log('item removed?', await getData('user_id'));
   } catch (e) {
     console.log(e);
   }

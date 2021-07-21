@@ -28,3 +28,12 @@ export const FormTitle = styled.Text`
   font-style: italic;
   margin-bottom: 25px;
 `;
+
+export const Title = styled.Text`
+  color: #707070;
+  font-size: 22px;
+  font-family: Helvetica;
+  font-style: italic;
+  font-weight: bold;
+  margin-bottom: 15px;
+`;

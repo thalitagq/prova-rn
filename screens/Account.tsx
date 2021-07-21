@@ -1,11 +1,12 @@
 import React from 'react'
 import { View, Text } from 'react-native'
+import Layout from '../UI/Layout'
 
 const Account = () => {
   return (
-    <View>
+    <Layout>
       <Text>account</Text>
-    </View>
+    </Layout>
   )
 }
 

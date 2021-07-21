@@ -1,49 +1,60 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components';
-import { gamesActions } from '../../store/games'
+import React, { useEffect, useState } from "react";
+import { gamesActions } from "../../store/games";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from '../../store';
+import { RootState } from "../../store";
+import styled from "styled-components/native";
+import { TouchableOpacity } from "react-native";
 
-const Number = styled.button`
+const Number = styled.TouchableOpacity`
   background-color: #adc0c4;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
   border: 0;
-  border-radius: 50%;
-  width: 63px;
-  height: 63px;
-  cursor: pointer;
+  border-radius: 50px;
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  /* margin-left: 10px;*/
+  margin-bottom: 10px 
 `;
 
-const NumberActive = styled(Number)`
+const NumberActive = styled(Number)<{ color: string }>`
   background-color: ${(props) => props.color || "#000"};
+`;
+
+const NumberText = styled.Text`
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
 `;
 
 type BetNumberProps = {
   number: string;
   color: string;
-  onClick: () => void
-}
+  onPress: () => void;
+};
 
 const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
-  const [isActive, setIsActive] = useState(false)
-  const {selectedNumbers, selectedGame, isGameCompleted } = useSelector((state: RootState) => state.games)
-  const dispatch = useDispatch()
+  const [isActive, setIsActive] = useState(false);
+  const { selectedNumbers, selectedGame, isGameCompleted } = useSelector(
+    (state: RootState) => state.games
+  );
+  const dispatch = useDispatch();
 
   const onClickNumberHandler = () => {
-    if ( selectedNumbers.length ===  selectedGame!['max-number'] && !selectedNumbers.includes(props.number)){
-      return
+    if (
+      selectedNumbers.length === selectedGame!["max-number"] &&
+      !selectedNumbers.includes(props.number)
+    ) {
+      return;
     }
 
-    if(isActive){
-      dispatch(gamesActions.removeNumber(props.number))
-    }
-    else{
+    if (isActive) {
+      dispatch(gamesActions.removeNumber(props.number));
+    } else {
       dispatch(gamesActions.addNumber(props.number));
     }
-    setIsActive(prevState => !prevState)
-  }
+    setIsActive((prevState) => !prevState);
+  };
 
   useEffect(() => {
     if (
@@ -58,9 +69,22 @@ const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
     }
   }, [selectedNumbers, props.number, isGameCompleted]);
 
-  if(isActive)
-    return <NumberActive onClick={onClickNumberHandler} color={props.color}>{props.number}</NumberActive>
-  return <Number onClick={onClickNumberHandler}>{props.number}</Number>
-}
+  if (isActive) {
+    return (
+      <TouchableOpacity onPress={onClickNumberHandler}>
+        <NumberActive color={props.color}>
+          <NumberText>{props.number}</NumberText>
+        </NumberActive>
+      </TouchableOpacity>
+    );
+  }
+  return (
+    <TouchableOpacity onPress={onClickNumberHandler}>
+      <Number>
+        <NumberText>{props.number}</NumberText>
+      </Number>
+    </TouchableOpacity>
+  );
+};
 
-export default BetNumber
+export default BetNumber;

@@ -58,8 +58,6 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getBets.fulfilled, (state, { payload }) => {
-      console.log('BETS FULFILED', payload);
-      console.log("isBetsStoredEmpty", state.isBetsStoredEmpty);
       if (payload.length !== 0) {
         state.isBetsStoredEmpty = false;
         state.gamesSaved = payload;
