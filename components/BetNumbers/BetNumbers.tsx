@@ -14,10 +14,8 @@ const Container = styled.View`
 const BetNumbers: React.FC<{ range: number, color: string }> = (props) => {
   const numbers = [];
 
-  const onClickNumberHandler = () => {};
-
   for (let index = 1; index <= props.range; index++) {
-    numbers.push(<BetNumber number={index.toString()} onPress={onClickNumberHandler} key={index} color={props.color}/>);
+    numbers.push(<BetNumber number={index.toString()} key={index} color={props.color}/>);
   }
 
   return <Container>{numbers}</Container>;

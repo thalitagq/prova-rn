@@ -3,7 +3,6 @@ import { gamesActions } from "../../store/games";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import styled from "styled-components/native";
-import { TouchableOpacity } from "react-native";
 
 const Number = styled.TouchableOpacity`
   background-color: #adc0c4;
@@ -13,8 +12,7 @@ const Number = styled.TouchableOpacity`
   height: 60px;
   align-items: center;
   justify-content: center;
-  /* margin-left: 10px;*/
-  margin-bottom: 10px 
+  margin-bottom: 10px;
 `;
 
 const NumberActive = styled(Number)<{ color: string }>`
@@ -30,7 +28,6 @@ const NumberText = styled.Text`
 type BetNumberProps = {
   number: string;
   color: string;
-  onPress: () => void;
 };
 
 const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
@@ -41,10 +38,9 @@ const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
   const dispatch = useDispatch();
 
   const onClickNumberHandler = () => {
-    if (
-      selectedNumbers.length === selectedGame!["max-number"] &&
-      !selectedNumbers.includes(props.number)
-    ) {
+    
+    if (selectedNumbers.length === selectedGame!["max-number"] &&
+        !selectedNumbers.includes(props.number)) {
       return;
     }
 
@@ -69,21 +65,17 @@ const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
     }
   }, [selectedNumbers, props.number, isGameCompleted]);
 
-  if (isActive) {
+  if (isActive) {    
     return (
-      <TouchableOpacity onPress={onClickNumberHandler}>
-        <NumberActive color={props.color}>
-          <NumberText>{props.number}</NumberText>
-        </NumberActive>
-      </TouchableOpacity>
+      <NumberActive color={props.color} onPress={onClickNumberHandler}>
+        <NumberText>{props.number}</NumberText>
+      </NumberActive>
     );
   }
   return (
-    <TouchableOpacity onPress={onClickNumberHandler}>
-      <Number>
-        <NumberText>{props.number}</NumberText>
-      </Number>
-    </TouchableOpacity>
+    <Number onPress={onClickNumberHandler}>
+      <NumberText>{props.number}</NumberText>
+    </Number>
   );
 };
 

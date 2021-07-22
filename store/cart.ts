@@ -15,7 +15,8 @@ type InitialStateType = {
   totalPrice: number;
   gamesSaved: Item[];
   error: string | null;
-  isBetsStoredEmpty : boolean
+  isBetsStoredEmpty : boolean;
+  isCartOpen: boolean;
 };
 
 const initialState = () =>
@@ -25,6 +26,7 @@ const initialState = () =>
     gamesSaved: [],
     error: null,
     isBetsStoredEmpty: true,
+    isCartOpen: false
   } as InitialStateType);
 
 const cartSlice = createSlice({
@@ -55,6 +57,9 @@ const cartSlice = createSlice({
       state.gamesSaved = [];
     },
     resetState: (state) => initialState(),
+    toggleCart: (state) =>{
+      state.isCartOpen = !state.isCartOpen
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getBets.fulfilled, (state, { payload }) => {

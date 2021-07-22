@@ -1,12 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import styled from "styled-components/native";
 import { MaterialIcons } from "@expo/vector-icons"; 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../store/api";
 import { authActions } from "../store/auth";
 import { gamesActions } from "../store/games";
 import { cartActions } from "../store/cart";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { RootState } from "../store";
+import { Title } from "../utils/styles";
 
 const Container = styled.View`
   height: 90px;
@@ -17,7 +20,7 @@ const Container = styled.View`
   background-color: #fff;
 `
 
-const Title = styled.Text`
+const PageTitle = styled.Text`
   color: #707070;
   font-family: Helvetica;
   font-size: 30px;
@@ -31,6 +34,8 @@ const TitleBorder = styled.View`
 `;
 
 const Navbar = () => {
+  const {isCartOpen} = useSelector((state: RootState) => state.cart)
+
   const dispatch = useDispatch()
   const logoutHandler = async () => {
     await dispatch(logoutUser());
@@ -38,16 +43,53 @@ const Navbar = () => {
     dispatch(gamesActions.resetState())
     dispatch(cartActions.resetState());
   };
+
+  const toggleCartHandler = () =>{
+    dispatch(cartActions.toggleCart())
+  }
   
   return (
     <Container>
       <View>
-        <Title>TGL</Title>
+        <PageTitle>TGL</PageTitle>
         <TitleBorder></TitleBorder>
       </View>
-      <TouchableOpacity onPress={logoutHandler}>
-        <MaterialIcons name="logout" size={40} color="#C1C1C1" />
-      </TouchableOpacity>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={{ marginRight: 20 }}
+          onPress={toggleCartHandler}
+        >
+          <MaterialCommunityIcons
+            name="cart-outline"
+            size={40}
+            color="#B5C401"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={logoutHandler}>
+          <MaterialIcons name="logout" size={40} color="#C1C1C1" />
+        </TouchableOpacity>
+      </View>
+      <Modal
+        transparent={true}
+        visible={isCartOpen}
+        animationType="fade"
+        onRequestClose={() => {
+          dispatch(cartActions.toggleCart());
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={{flexDirection: "row", alignItems: 'baseline'}}>
+              <MaterialCommunityIcons
+                name="cart-outline"
+                size={40}
+                color="#B5C401"
+              />
+              <Title>CART</Title>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Container>
   );
 };
@@ -58,5 +100,26 @@ const styles = StyleSheet.create({
   navbar: {
     height: 80,
     alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
+  modalView: {
+    height: "100%",
+    width: '70%',
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   }
 })

@@ -19,7 +19,7 @@ export default Layout
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    paddingVertical: 20,
+    paddingTop: 20,
     paddingHorizontal: 10
   }
 })
