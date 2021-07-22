@@ -1,34 +1,42 @@
+import React from "react";
 import Game from "../Game";
-import { IoTrashOutline } from "react-icons/io5";
-import styled from "styled-components";
+import { Ionicons } from "@expo/vector-icons";
+import styled from "styled-components/native";
 import { GameProps } from "../Game";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../store/cart";
+import { View } from "react-native";
 
-const Container = styled.div`
-  display: flex;
+const Container = styled.View`
+  /* flex: 1; */
+  flex-direction: row;
+  align-items: center;
+  /* flex-shrink: 1; */
 `;
 
-const DeleteButton = styled.button`
+const DeleteButton = styled.TouchableOpacity`
   background: transparent;
   border: 0;
-  cursor: pointer;
   font-size: 25px;
   color: #888888;
   margin-right: 15px;
 `;
 
 const CartItem: React.FC<GameProps> = (props: GameProps) => {
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
   const deleteGameHandler = () => {
-    dispatch(cartActions.removeFromCart({id: props.id, price: props.price}));
-  }
+    dispatch(cartActions.removeFromCart({ id: props.id, price: props.price }));
+  };
 
   return (
     <Container>
-      <DeleteButton onClick={deleteGameHandler}>
-        <IoTrashOutline />
+      <DeleteButton onPress={deleteGameHandler}>
+        <Ionicons
+          name="trash-outline"
+          size={24}
+          color="#888888"
+        />
       </DeleteButton>
       <Game
         color={props.color}

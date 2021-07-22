@@ -14,11 +14,13 @@ import { useSelector } from 'react-redux'
 import { RootState } from "./store/index";
 import { PersistGate } from "redux-persist/integration/react";
 import InnerTabs from "./components/InnerTabs";
+import NewPassWordForm from "./forms/NewPassWordForm";
 
 export type InitialStackParamList = {
   Login: undefined;
   Signup: undefined;
   Reset: undefined;
+  NewPassword: undefined
 };
 
 const InitialStack = createStackNavigator<InitialStackParamList>();
@@ -27,6 +29,7 @@ const InitialStackScreen = () => (
     <InitialStack.Screen name="Login" component={LoginForm} />
     <InitialStack.Screen name="Signup" component={SignUpForm} />
     <InitialStack.Screen name="Reset" component={ResetPasswordForm} />
+    <InitialStack.Screen name="NewPassword" component={NewPassWordForm} />
   </InitialStack.Navigator>
 );
 

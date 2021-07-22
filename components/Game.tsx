@@ -6,11 +6,12 @@ const Numbers = styled.Text<{ fontSize?: string }>`
   font-size: ${(props) => props.fontSize || "14px"};
   font-weight: bold;
   font-style: italic;
-  flex: 1;
-  flex-shrink: 1;
+  /* flex: 1;
+  flex-shrink: 1; */
 `;
 
 const Container = styled.View`
+  flex: 1;
   flex-direction: row;
   margin-bottom: 10px;
 `;
@@ -19,7 +20,6 @@ const ContainerBorder = styled.View<{ color: string }>`
   background-color: ${(props) => props.color || "#000"};
   width: 6px;
   border-radius: 10px;
-  height: 100%;
   margin-right: 10px;
 `;
 
@@ -31,6 +31,7 @@ const Info = styled.Text<{ fontSize?: string }>`
 const Wraper = styled.View`
   flex-direction: column;
   flex: 1;
+  flex-shrink: 1;
 `;
 
 const GameName = styled.Text<{ color: string; fontSize?: string }>`
@@ -59,9 +60,9 @@ const Game: React.FC<GameProps> = (props: GameProps) => {
     <Container>
       <ContainerBorder color={props.color} />
       <Wraper>
-          <Numbers fontSize={props.fontSize || undefined}>
-            {props.numbers.join(", ")}
-          </Numbers>
+        <Numbers fontSize={props.fontSize || undefined}>
+          {props.numbers.join(", ")}
+        </Numbers>
         <Info fontSize={props.fontSize || undefined}>
           {props.date} - {`(R$${transformPrice(props.price)})`}
         </Info>

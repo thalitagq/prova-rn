@@ -119,8 +119,7 @@ export const forgotPassword = createAsyncThunk<
       method: "post",
       url: "http://192.168.18.9:3333/passwords",
       data: {
-        email,
-        redirect_url: "http://192.168.18.9:3000/new_password",
+        email
       },
       headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { View, Text, Modal, StyleSheet } from "react-native";
+import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components/native";

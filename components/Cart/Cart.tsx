@@ -1,11 +1,9 @@
 import styled from "styled-components";
-import { Card } from "../../styles/FormStyledComponents";
 import CartItem from "./CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { cartActions } from '../../store/cart'
 import {transformPrice} from "../Game"
-import { FiArrowRight } from "react-icons/fi";
 import { saveBet } from '../../store/api'
 
 const Container = styled(Card)`
@@ -97,7 +95,7 @@ function Cart() {
       </Body>
       <Footer>
         <SaveButton onClick={saveBetHandler}>
-          Save <FiArrowRight />
+          Save 
         </SaveButton>
       </Footer>
     </Container>
