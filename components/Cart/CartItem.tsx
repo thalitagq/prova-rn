@@ -5,13 +5,10 @@ import styled from "styled-components/native";
 import { GameProps } from "../Game";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../store/cart";
-import { View } from "react-native";
 
 const Container = styled.View`
-  /* flex: 1; */
   flex-direction: row;
   align-items: center;
-  /* flex-shrink: 1; */
 `;
 
 const DeleteButton = styled.TouchableOpacity`

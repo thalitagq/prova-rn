@@ -9,18 +9,20 @@ import GameTag, { GameProps } from "../components/Game";
 import GameButton from "../components/GameButton";
 import { ScrollView } from "react-native";
 import Filters from "../UI/Filters";
-import { Title } from '../utils/styles'
+import { Title } from "../utils/styles";
 
 const Home = () => {
   const { games, selectedGame } = useSelector(
     (state: RootState) => state.games
   );
-  const { user_id } = useSelector((state: RootState) => state.auth);
 
   const { gamesSaved, isBetsStoredEmpty } = useSelector(
     (state: RootState) => state.cart
   );
+
   const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
+  const [count, setCount] = useState(gamesSaved.length);
+
   const dispatch = useDispatch();
   useEffect(() => {
     const getGamesHandler = async () => {
@@ -36,17 +38,18 @@ const Home = () => {
     }
 
     if (gamesSaved.length === 0 && isBetsStoredEmpty) {
-      console.log("getting bets again");
       getBetsHandler();
     }
   }, [dispatch, games.length, gamesSaved.length, isBetsStoredEmpty]);
 
   useEffect(() => {
-    setFilteredGames(
-      gamesSaved.filter((game) => game.type === selectedGame!.type)
-    );
-  }, [selectedGame, gamesSaved]);
-  console.log(filteredGames);
+    setCount(gamesSaved.length);
+    const filtered = [
+      ...gamesSaved.filter((game) => game.type === selectedGame!.type),
+    ];
+    setFilteredGames([...filtered]);
+    return () => setFilteredGames([]);
+  }, [selectedGame, gamesSaved, gamesSaved.length]);
 
   return (
     <Layout>
@@ -57,16 +60,15 @@ const Home = () => {
       )}
       <ScrollView>
         {filteredGames.map((game) => (
-          <View style={{ marginBottom: 10 }} key={game.id}>
-            <GameTag
-              date={game.date}
-              price={game.price}
-              color={game.color}
-              id={game.id}
-              numbers={game.numbers}
-              type={game.type}
-            />
-          </View>
+          <GameTag
+            key={game.id}
+            date={game.date}
+            price={game.price}
+            color={game.color}
+            id={game.id}
+            numbers={game.numbers}
+            type={game.type}
+          />
         ))}
       </ScrollView>
     </Layout>

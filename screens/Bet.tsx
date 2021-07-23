@@ -69,9 +69,6 @@ const Bet = () => {
   };
 
   const completeGameHandler = () => {
-    // if (selectedGame["max-number"] - selectedNumbers.length === 0) {
-    //   dispatch(gamesActions.clearGame());
-    // }
     dispatch(gamesActions.completeGame());
   };
 

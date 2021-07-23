@@ -48,7 +48,7 @@ const cartSlice = createSlice({
       if (state.totalPrice < 30) {
         return
       }
-      state.gamesSaved = state.gamesSaved.concat(state.cart);
+      state.gamesSaved = [...state.gamesSaved.concat(state.cart)];
 
       state.cart = [];
       state.totalPrice = 0;

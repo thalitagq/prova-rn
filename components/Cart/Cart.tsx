@@ -1,105 +1,151 @@
-import styled from "styled-components";
+import React from "react";
 import CartItem from "./CartItem";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { cartActions } from '../../store/cart'
-import {transformPrice} from "../Game"
-import { saveBet } from '../../store/api'
+import { transformPrice } from "../Game";
+import { saveBet } from "../../store/api";
+import { useDispatch, useSelector } from "react-redux";
+import { cartActions } from "../../store/cart";
+import {
+  View,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { Title } from "../../utils/styles";
+import CustomConfirmButtom from "../../UI/CustomConfirmButtom";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import styled from "styled-components/native";
 
-const Container = styled(Card)`
-  /* padding: 1rem; */
-  height: 100%;
-`;
-
-const Title = styled.h1`
+const TextBold = styled.Text`
   color: #707070;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: bold;
   font-style: italic;
 `;
 
-const Total = styled(Title)`
-  margin-bottom: 0;
-  margin-top: auto;
-  font-weight: 300;
-  font-style: unset;
+const TextLight = styled(TextBold)`
+  font-family: "Helvetica Light";
+  font-weight: normal;
+  font-style: normal;
 `;
 
-const Body = styled.div`
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: inherit;
-  flex-direction: column;
-  height: inherit;
-  margin: 15px 0;
-  gap: 10px;
-`;
-
-const Footer = styled.div`
-  background-color: #f4f4f4;
-  height: 95px;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  display: flex;
-  justify-content: center;
-`;
-
-const SaveButton = styled.button`
-  background: transparent;
-  color: #27c383;
-  border: 0;
-  font-size: 35px;
-  font-style: italic;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+const Footer = styled.View`
+  background-color: #ebebeb;
 `;
 
 function Cart() {
-  const { cart, totalPrice } = useSelector((state: RootState) => state.cart);
-  const dispatch = useDispatch()
-  const msg = <Title style={{ margin: "auto" }}>Carrinho vazio</Title>;
+  const { isCartOpen, cart, totalPrice } = useSelector(
+    (state: RootState) => state.cart
+  );
+  const dispatch = useDispatch();
+  const msg = <Title style={styles.centralizedText}>Carrinho vazio</Title>;
 
-  const saveBetHandler = async() => {
-    await dispatch(saveBet())
-    dispatch(cartActions.saveGame())
-  }
+  const saveBetHandler = async () => {
+    await dispatch(saveBet());
+    dispatch(cartActions.saveGame());
+  };
 
   return (
-    <Container>
-      <Body>
-      <Title>CART </Title>
-        {cart.length > 0
-          ? cart.map((item) => {
-              return (
-                <CartItem
-                  color={item.color}
-                  date={item.date}
-                  numbers={item.numbers}
-                  price={item.price}
-                  type={item.type}
-                  key={item.id}
-                  id={item.id}
-                />
-              );
-            })
-          : msg}
-      <Total>
-        <strong>
-          <i>CART </i>
-        </strong>
-        <span>TOTAL: R$ {transformPrice(totalPrice)}</span>
-      </Total>
-      </Body>
-      <Footer>
-        <SaveButton onClick={saveBetHandler}>
-          Save 
-        </SaveButton>
-      </Footer>
-    </Container>
+    <Modal
+      transparent={true}
+      visible={isCartOpen}
+      animationType="fade"
+      onRequestClose={() => {
+        dispatch(cartActions.toggleCart());
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.modalBody}>
+            <TouchableOpacity
+              style={{ marginLeft: "auto", marginBottom: 10 }}
+              onPress={() => dispatch(cartActions.toggleCart())}
+            >
+              <AntDesign name="close" size={30} color="#B5C401" />
+            </TouchableOpacity>
+            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
+              <MaterialCommunityIcons
+                name="cart-outline"
+                size={40}
+                color="#B5C401"
+              />
+              <Title>CART</Title>
+            </View>
+            <View style={{ flex: 1 }}>
+              {cart.length > 0 && (
+                <ScrollView>
+                  {cart.map((item) => {
+                    return (
+                      <CartItem
+                        color={item.color}
+                        date={item.date}
+                        numbers={item.numbers}
+                        price={item.price}
+                        type={item.type}
+                        key={item.id}
+                        id={item.id}
+                      />
+                    );
+                  })}
+                </ScrollView>
+              )}
+              {cart.length === 0 && msg}
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "baseline",
+                marginTop: "auto",
+              }}
+            >
+              <TextBold>CART</TextBold>
+              <TextLight> TOTAL: </TextLight>
+              <TextBold style={{ marginLeft: "auto" }}>
+                R$ {transformPrice(totalPrice)}
+              </TextBold>
+            </View>
+          </View>
+          <Footer>
+            <CustomConfirmButtom title="Save" onPress={saveBetHandler} />
+          </Footer>
+        </View>
+      </View>
+    </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
+  modalView: {
+    height: "100%",
+    width: "70%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalBody: {
+    flex: 1,
+    padding: 20,
+  },
+  centralizedText: {
+    marginTop: "auto",
+    marginBottom: "auto",
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+});
 
 export default Cart;
